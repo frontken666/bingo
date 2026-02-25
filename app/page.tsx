@@ -138,11 +138,8 @@ export default function Home() {
         {/* 頁面標題 */}
         <header className="text-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 mb-2 sm:mb-3 md:mb-4 leading-tight tracking-tight">
-            🎰 台灣彩券賓果 AI 預測分析
+            賓果 AI 預測
           </h1>
-          <p className="text-gray-300 text-sm sm:text-base md:text-lg px-4 font-light">
-            使用 AI 智慧分析，提升中獎機會
-          </p>
           {dataSource && (
             <div className="mt-2 sm:mt-3">
               <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-gray-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700">
