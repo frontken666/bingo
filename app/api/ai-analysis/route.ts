@@ -165,7 +165,7 @@ function extractNumbersFromText(text: string): number[] {
     .map(n => parseInt(n))
     .filter(n => n >= 1 && n <= 80);
   
-  return [...new Set(numbers)];
+  return Array.from(new Set(numbers));
 }
 
 function generateFallbackNumbers(count: number): number[] {
