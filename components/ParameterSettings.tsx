@@ -45,7 +45,7 @@ export default function ParameterSettings({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-600">
-                {[3, 4, 5, 6].map(n => (
+                {[1, 2, 3, 4, 5, 6].map(n => (
                   <SelectItem key={n} value={n.toString()} className="text-gray-100 hover:bg-slate-700">
                     {n} 星
                   </SelectItem>

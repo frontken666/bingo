@@ -45,17 +45,17 @@ export default function TopNumbers({ hotNumbers, coldNumbers }: TopNumbersProps)
 
           {/* 熱門號碼內容 */}
           <TabsContent value="hot" className="mt-0">
-            <div className="space-y-2 sm:space-y-2.5">
+            <div className="space-y-1.5 sm:space-y-2">
               {hotNumbers.map((item, idx) => (
                 <div 
                   key={idx} 
-                  className="flex items-center justify-between p-3 sm:p-3.5 md:p-4 bg-red-900/30 rounded-lg border border-red-800/50 hover:bg-red-900/40 hover:border-red-700/60 transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="flex items-center justify-between p-2 sm:p-2.5 bg-red-900/30 rounded-lg border border-red-800/50 hover:bg-red-900/40 hover:border-red-700/60 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="text-base sm:text-lg font-bold text-gray-300 w-7 sm:w-9 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className="text-sm sm:text-base font-bold text-gray-300 w-6 sm:w-7 flex-shrink-0">
                       #{idx + 1}
                     </span>
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white font-bold flex items-center justify-center shadow-lg text-base sm:text-lg flex-shrink-0 ring-2 ring-red-400/30">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white font-bold flex items-center justify-center shadow-lg text-sm sm:text-base flex-shrink-0 ring-2 ring-red-400/30">
                       {item.number}
                     </div>
                   </div>
@@ -69,17 +69,17 @@ export default function TopNumbers({ hotNumbers, coldNumbers }: TopNumbersProps)
 
           {/* 冷門號碼內容 */}
           <TabsContent value="cold" className="mt-0">
-            <div className="space-y-2 sm:space-y-2.5">
+            <div className="space-y-1.5 sm:space-y-2">
               {coldNumbers.map((item, idx) => (
                 <div 
                   key={idx} 
-                  className="flex items-center justify-between p-3 sm:p-3.5 md:p-4 bg-blue-900/30 rounded-lg border border-blue-800/50 hover:bg-blue-900/40 hover:border-blue-700/60 transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="flex items-center justify-between p-2 sm:p-2.5 bg-blue-900/30 rounded-lg border border-blue-800/50 hover:bg-blue-900/40 hover:border-blue-700/60 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="text-base sm:text-lg font-bold text-gray-300 w-7 sm:w-9 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className="text-sm sm:text-base font-bold text-gray-300 w-6 sm:w-7 flex-shrink-0">
                       #{idx + 1}
                     </span>
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold flex items-center justify-center shadow-lg text-base sm:text-lg flex-shrink-0 ring-2 ring-blue-400/30">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold flex items-center justify-center shadow-lg text-sm sm:text-base flex-shrink-0 ring-2 ring-blue-400/30">
                       {item.number}
                     </div>
                   </div>

@@ -16,6 +16,8 @@ export default function CostAnalysis({ stars, multiple, periods, bets }: CostAna
   
   // 奖金表
   const PRIZE_TABLE: { [key: number]: { [key: string]: number } } = {
+    1: { '1': 75 },
+    2: { '2': 150 },
     3: { '2': 25, '3': 1000 },
     4: { '2': 25, '3': 150, '4': 2000 },
     5: { '3': 50, '4': 600, '5': 10000 },
@@ -64,25 +66,6 @@ export default function CostAnalysis({ stars, multiple, periods, bets }: CostAna
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-5 md:p-6 pt-0">
-        {/* 投注配置摘要 */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-          <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <div className="text-xs text-gray-400 mb-1">投注星數</div>
-            <div className="text-xl sm:text-2xl font-bold text-purple-400">{stars} 星</div>
-          </div>
-          <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <div className="text-xs text-gray-400 mb-1">倍數</div>
-            <div className="text-xl sm:text-2xl font-bold text-blue-400">{multiple} 倍</div>
-          </div>
-          <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <div className="text-xs text-gray-400 mb-1">期數</div>
-            <div className="text-xl sm:text-2xl font-bold text-green-400">{periods} 期</div>
-          </div>
-          <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <div className="text-xs text-gray-400 mb-1">注數</div>
-            <div className="text-xl sm:text-2xl font-bold text-yellow-400">{bets} 注</div>
-          </div>
-        </div>
 
         {/* 成本與收益分析 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
