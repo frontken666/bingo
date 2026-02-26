@@ -47,7 +47,7 @@ export default function NumberGrid({
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-5 md:p-6 pt-0">
-        <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-10 lg:grid-cols-10 gap-1.5 sm:gap-2 md:gap-2.5">
+        <div className="grid grid-cols-10 gap-1.5 sm:gap-2 md:gap-2.5">
           {Array.from({ length: 80 }, (_, i) => i + 1).map(num => {
             const count = frequency[num];
             const isRecommended = allRecommendedNumbers.includes(num);
@@ -56,7 +56,7 @@ export default function NumberGrid({
             return (
               <div
                 key={num}
-                className={`relative aspect-square rounded-md sm:rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all hover:scale-110 hover:z-10 hover:shadow-lg cursor-pointer ${
+                className={`relative aspect-square rounded-md sm:rounded-lg flex flex-col items-center justify-center font-semibold transition-all hover:scale-105 hover:z-10 hover:shadow-xl cursor-pointer ${
                   isRecommended 
                     ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white ring-2 sm:ring-4 ring-purple-400/50 shadow-lg shadow-purple-500/50' 
                     : 'bg-slate-700 text-gray-300 border border-slate-600 hover:border-slate-500'
@@ -66,15 +66,15 @@ export default function NumberGrid({
                 } : {}}
                 title={`號碼 ${num} - 出現 ${count} 次${isRecommended ? ' (AI推薦)' : ''}`}
               >
-                <span className="text-sm sm:text-base md:text-lg font-bold leading-none">
+                <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold leading-none">
                   {num}
                 </span>
-                <span className="text-[10px] sm:text-xs opacity-80 leading-none mt-0.5 font-medium">
+                <span className="text-[10px] sm:text-xs md:text-sm opacity-80 leading-none mt-0.5 sm:mt-1 font-medium">
                   {count}
                 </span>
                 {isRecommended && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                    <span className="text-[8px] sm:text-[10px]">✨</span>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-[10px] sm:text-xs">✨</span>
                   </div>
                 )}
               </div>
@@ -86,7 +86,7 @@ export default function NumberGrid({
         <div className="mt-5 pt-4 sm:pt-5 border-t border-slate-700 flex flex-wrap gap-3 sm:gap-5 text-xs sm:text-sm text-gray-400 justify-center sm:justify-start">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-gradient-to-br from-purple-200 to-indigo-400 shadow-sm"></div>
-            <span className="font-medium">低頻率</span>
+            <span className="font-medium">高頻率</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-gradient-to-br from-purple-400 to-indigo-600 shadow-sm"></div>
@@ -94,7 +94,7 @@ export default function NumberGrid({
           </div>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-gradient-to-br from-purple-600 to-indigo-800 shadow-sm"></div>
-            <span className="font-medium">高頻率</span>
+            <span className="font-medium">低頻率</span>
           </div>
         </div>
       </CardContent>

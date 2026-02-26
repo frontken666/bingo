@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, TrendingUp, TrendingDown, Zap, Brain, Play } from 'lucide-react';
+import { TrendingUp, Zap, Brain, Play, Copy, Check } from 'lucide-react';
 
 interface AIRecommendation {
   bets: number[][];  // 多注号码
@@ -31,12 +31,11 @@ export default function AIAnalysis({
   bets,
 }: AIAnalysisProps) {
   const [selectedStrategy, setSelectedStrategy] = useState<string>('');
+  const [copied, setCopied] = useState(false);
 
   const strategies = [
     { id: 'hot', name: '熱門策略', icon: TrendingUp, color: 'bg-red-600/80 hover:bg-red-700 border-red-500' },
-    { id: 'cold', name: '冷門策略', icon: TrendingDown, color: 'bg-blue-600/80 hover:bg-blue-700 border-blue-500' },
     { id: 'consecutive', name: '連號策略', icon: Zap, color: 'bg-yellow-600/80 hover:bg-yellow-700 border-yellow-500' },
-    { id: 'mixed', name: '混搭策略', icon: Sparkles, color: 'bg-pink-600/80 hover:bg-pink-700 border-pink-500' },
     { id: 'ai', name: 'AI 建議', icon: Brain, color: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 border-purple-500' },
   ];
 
@@ -44,6 +43,18 @@ export default function AIAnalysis({
     if (selectedStrategy) {
       handleAIAnalysis(selectedStrategy);
     }
+  };
+
+  const handleCopyNumbers = () => {
+    const allBets = aiRecommendations?.bets || (aiRecommendations?.numbers ? [aiRecommendations.numbers] : []);
+    const formattedText = allBets
+      .map(bet => bet.slice(0, stars).join(','))
+      .join('\n');
+    
+    navigator.clipboard.writeText(formattedText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   return (
@@ -86,7 +97,7 @@ export default function AIAnalysis({
           <label className="block text-xs sm:text-sm font-medium mb-3 text-gray-300 pl-1">
             選擇分析策略
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {strategies.map((strategy) => {
               const Icon = strategy.icon;
               const isSelected = selectedStrategy === strategy.id;
@@ -100,7 +111,7 @@ export default function AIAnalysis({
                     isSelected 
                       ? `${strategy.color} ring-2 ring-white/50 scale-105` 
                       : 'bg-slate-700/50 hover:bg-slate-700 border-slate-600'
-                  } ${strategy.id === 'ai' ? 'col-span-2 sm:col-span-1' : ''}`}
+                  }`}
                   variant="outline"
                 >
                   <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -140,6 +151,27 @@ export default function AIAnalysis({
         {/* AI 推薦結果 */}
         {aiRecommendations && !loading && (
           <div className="mt-4 sm:mt-6 space-y-4">
+            {/* 複製按鈕 */}
+            <div className="flex justify-end">
+              <Button
+                onClick={handleCopyNumbers}
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm h-9"
+                size="sm"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    已複製
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    複製號碼
+                  </>
+                )}
+              </Button>
+            </div>
+
             {(() => {
               // 兼容旧格式和新格式
               const allBets = aiRecommendations.bets || (aiRecommendations.numbers ? [aiRecommendations.numbers] : []);

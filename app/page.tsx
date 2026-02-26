@@ -8,6 +8,7 @@ import TopNumbers from '@/components/TopNumbers';
 import FrequencyChart from '@/components/FrequencyChart';
 import NumberGrid from '@/components/NumberGrid';
 import HistoryRecords from '@/components/HistoryRecords';
+import PrizeChecker from '@/components/PrizeChecker';
 
 interface BingoDrawResult {
   drawNumber: string;
@@ -30,7 +31,7 @@ export default function Home() {
   const [bets, setBets] = useState<number>(1);
   
   // 分析相關狀態
-  const [analysisRange, setAnalysisRange] = useState<number>(20);
+  const [analysisRange, setAnalysisRange] = useState<number>(10);
   const [historicalData, setHistoricalData] = useState<BingoDrawResult[]>([]);
   const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation | null>(null);
   const [loading, setLoading] = useState(false);
@@ -59,6 +60,33 @@ export default function Home() {
   const handleAIAnalysis = async (strategy: string) => {
     setLoading(true);
     try {
+      // 计算频率
+      const frequency = calculateFrequency();
+      
+      // 获取最冷门的15个号码（先找0次，不足15个则从冷门补齐）
+      const zeroFreqNumbers = Object.entries(frequency)
+        .filter(([, count]) => count === 0)
+        .map(([num]) => parseInt(num));
+      
+      let coldest15: number[];
+      if (zeroFreqNumbers.length < 15) {
+        // 如果0次号码不足15个，从冷门号码补齐
+        const sortedByFreq = Object.entries(frequency)
+          .filter(([num]) => !zeroFreqNumbers.includes(parseInt(num)))
+          .sort(([, a], [, b]) => a - b)
+          .map(([num]) => parseInt(num));
+        
+        const needed = 15 - zeroFreqNumbers.length;
+        const additionalCold = sortedByFreq.slice(0, needed);
+        coldest15 = [...zeroFreqNumbers, ...additionalCold];
+      } else {
+        // 如果0次号码超过15个，只取前15个
+        coldest15 = zeroFreqNumbers.slice(0, 15);
+      }
+
+      // 获取频率最低的两个区块的号码
+      const lowestBlockNumbers = getLowestFrequencyBlockNumbers();
+
       const response = await fetch('/api/ai-analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,7 +95,9 @@ export default function Home() {
           historicalData: historicalData.slice(0, analysisRange),
           stars,
           periods: analysisRange,
-          bets  // 传递注数参数
+          bets,  // 传递注数参数
+          coldestNumbers: coldest15,  // 传递最冷门的15个号码（含0次）
+          lowestBlockNumbers  // 传递频率最低的两个区块的号码
         })
       });
 
@@ -98,6 +128,48 @@ export default function Home() {
     });
 
     return frequency;
+  };
+
+  // 獲取頻率最低的兩個區塊的號碼
+  const getLowestFrequencyBlockNumbers = () => {
+    const frequency = calculateFrequency();
+    const blocks: Array<{ range: string; numbers: number[]; totalFreq: number; hotCount: number }> = [];
+    
+    // 計算每個區塊（4個號碼一組）
+    for (let i = 1; i <= 80; i += 4) {
+      const blockNumbers = [i, i+1, i+2, i+3].filter(n => n <= 80);
+      const totalFreq = blockNumbers.reduce((sum, n) => sum + (frequency[n] || 0), 0);
+      
+      // 計算區塊內熱門號碼數量（頻率高於平均值的號碼）
+      const avgFreq = totalFreq / blockNumbers.length;
+      const hotCount = blockNumbers.filter(n => frequency[n] >= avgFreq).length;
+      
+      blocks.push({
+        range: `${i}-${Math.min(i + 3, 80)}`,
+        numbers: blockNumbers,
+        totalFreq,
+        hotCount
+      });
+    }
+    
+    // 排序：先按總頻率，如果相同則按熱門號碼數量
+    blocks.sort((a, b) => {
+      if (a.totalFreq !== b.totalFreq) {
+        return a.totalFreq - b.totalFreq;  // 頻率低的在前
+      }
+      return a.hotCount - b.hotCount;  // 熱門號碼少的在前
+    });
+    
+    // 取最低的兩個區塊
+    const lowestTwoBlocks = blocks.slice(0, 2);
+    const excludedNumbers = lowestTwoBlocks.flatMap(block => block.numbers);
+    
+    console.log(`🎯 排除頻率最低的兩個區塊：`);
+    lowestTwoBlocks.forEach(block => {
+      console.log(`   ${block.range}: 總頻率=${block.totalFreq}, 熱門數=${block.hotCount}, 號碼=${block.numbers.join(',')}`);
+    });
+    
+    return excludedNumbers;
   };
 
   // 獲取熱門/冷門號碼
@@ -144,7 +216,7 @@ export default function Home() {
             <div className="mt-2 sm:mt-3">
               <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-gray-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                資料來源：{dataSource === 'official' ? '官方 API' : '模擬資料'}
+                資料來源：官方
               </span>
             </div>
           )}
@@ -181,26 +253,36 @@ export default function Home() {
           bets={bets}
         />
 
-        {/* 4. 熱門/冷門排行榜 */}
+        {/* 4. 兌獎系統 */}
+        <PrizeChecker
+          latestDraw={historicalData.length > 0 ? {
+            period: parseInt(historicalData[0].drawNumber),
+            date: `${historicalData[0].drawDate} ${historicalData[0].drawTime || ''}`.trim(),
+            numbers: historicalData[0].numbers
+          } : null}
+          multiple={multiple}
+        />
+
+        {/* 5. 熱門/冷門排行榜 */}
         <TopNumbers
           hotNumbers={hotNumbers}
           coldNumbers={coldNumbers}
         />
 
-        {/* 5. 頻率分析圖表 */}
+        {/* 6. 頻率分析圖表 */}
         <FrequencyChart
           chartData={chartData}
           analysisRange={analysisRange}
         />
 
-        {/* 6. 號碼球全覽 */}
+        {/* 7. 號碼球全覽 */}
         <NumberGrid
           analysisRange={analysisRange}
           frequency={frequency}
           aiRecommendations={aiRecommendations}
         />
 
-        {/* 7. 歷史開獎記錄 */}
+        {/* 8. 歷史開獎記錄 */}
         <HistoryRecords
           historicalData={historicalData}
           aiRecommendations={aiRecommendations}
